@@ -13,8 +13,8 @@ Este es un sistema de gestión de bibliotecas desarrollado con **Django**. El si
 
 ## Tecnologías
 
-- **Python 3.x**
-- **Django 3.x**
+- **Python 3.12.0**
+- **Django 5.1.6**
 - **SQLite**: Base de datos predeterminada (para desarrollo)
 - **Django REST Framework** (opcional, si se utiliza para exposiciones de API)
 - **JSON**: Para intercambiar datos entre el frontend y el backend
@@ -23,7 +23,7 @@ Este es un sistema de gestión de bibliotecas desarrollado con **Django**. El si
 
 Asegúrate de tener las siguientes herramientas instaladas en tu sistema:
 
-- **Python 3.x**
+- **Python 3**
 - **pip**: El gestor de paquetes de Python
 
 ## Instalación
@@ -57,6 +57,7 @@ pip install -r requirements.txt
 Realiza las migraciones de la base de datos para crear las tablas necesarias:
 
 ```bash
+python manage.py makemigrations app
 python manage.py migrate
 ```
 
