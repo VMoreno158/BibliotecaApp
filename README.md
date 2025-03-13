@@ -131,22 +131,13 @@ El servidor estará disponible en `http://127.0.0.1:8000/`.
 }
 ```
 
-## Contribución
-
-Si deseas contribuir a este proyecto, por favor sigue estos pasos:
-
-1. Haz un fork del repositorio.
-2. Crea una nueva rama para tu funcionalidad o corrección.
-3. Realiza tus cambios y asegúrate de que todo funcione correctamente.
-4. Realiza un pull request describiendo los cambios que has realizado.
-
 ## Licencia
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
 ## Contacto
 
-Si tienes alguna duda o sugerencia, puedes contactarme en **tu-email@dominio.com**.
+Si tienes alguna duda o sugerencia, puedes contactarme en **vmorenode.inf@upsa.es**.
 
 ---
 
