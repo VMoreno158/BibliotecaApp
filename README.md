@@ -136,10 +136,6 @@ El servidor estará disponible en `http://127.0.0.1:8000/`.
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más detalles.
 
-## Contacto
-
-Si tienes alguna duda o sugerencia, puedes contactarme en **vmorenode.inf@upsa.es**.
-
 ---
 
 ¡Gracias por usar este sistema de gestión de biblioteca! 😊
