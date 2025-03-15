@@ -85,52 +85,30 @@ El servidor estará disponible en `http://127.0.0.1:8000/`.
 
 ### Bibliotecas
 
-- **GET** `/libraries/`: Obtiene todas las bibliotecas registradas.
-- **POST** `/libraries/`: Crea una nueva biblioteca. Se debe enviar un cuerpo de solicitud JSON con los campos `name` y `location`.
-- **GET** `/libraries/{library_id}/`: Obtiene los detalles de una biblioteca específica por `id`.
+- **GET** `/libraries`: Obtiene todas las bibliotecas registradas.
+- **POST** `/libraries`: Crea una nueva biblioteca. Se debe enviar un cuerpo de solicitud JSON con los campos `name` y `location`.
+- **GET** `/libraries/{library_id}`: Obtiene los detalles de una biblioteca específica por `id`.
 
 ### Libros
 
-- **GET** `/books/`: Obtiene todos los libros disponibles.
-- **POST** `/books/`: Crea un nuevo libro. Debes proporcionar los campos `isbn`, `title`, `genre`, `author`, `editorial`, `format`, `age_range`, y `library_id`.
-- **GET** `/books/{book_id}/`: Obtiene los detalles de un libro específico por `id`.
+- **POST** `/books`: Crea un nuevo libro. Debes proporcionar los campos `isbn`, `title`, `genre`, `author`, `editorial`, `format`, `age_range`, y `library_id`.
+- **GET** `/libraries/{library_id}/books`: Obtiene los libros de una biblioteca específica por `id`.
+- **GET** `/books/{book_id}`: Obtiene los detalles de un libro específico por `id`.
+- **PUT/PATCH** `/books/{book_id}`: Modifica un libro específico por `id`. Debes proporcionar los campos `isbn`, `title`, `genre`, `author`, `editorial`, `format` y `age_range` editados.
+- **DELETE** `/books/{book_id}`: Elimina un libro específico por `id`.
 
 ### Usuarios
 
-- **GET** `/users/`: Obtiene todos los usuarios.
-- **POST** `/users/`: Registra un nuevo usuario. Se debe proporcionar `dni`, `email`, `name`, `surname` y `birthdate`.
-- **GET** `/users/{user_id}/`: Obtiene los detalles de un usuario específico por `id`.
+- **GET** `/users`: Obtiene todos los usuarios.
+- **POST** `/users`: Registra un nuevo usuario. Se debe proporcionar `dni`, `email`, `telf_number`, `name`, `surname` y `birthdate`.
+- **GET** `/users/{user_id}`: Obtiene los detalles de un usuario específico por `id`.
 
 ### Préstamos
 
-- **GET** `/loans/`: Obtiene todos los préstamos registrados.
-- **POST** `/loans/`: Crea un préstamo de libro. Se deben proporcionar `user_id` y `book_id`.
-- **POST** `/loans/{loan_id}/return/`: Marca un préstamo como devuelto.
-
-### Ejemplo de solicitud POST para agregar un libro
-
-```json
-{
-    "isbn": "978-3-16-148410-0",
-    "title": "El Gran Libro",
-    "genre": "fiction",
-    "language": "spanish",
-    "author": "Juan Pérez",
-    "editorial": "Editorial X",
-    "format": "physical",
-    "age_range": "adult",
-    "library_id": 1
-}
-```
-
-### Ejemplo de respuesta:
-
-```json
-{
-    "message": "Book successfully registered",
-    "book.id": 1
-}
-```
+- **GET** `/loans`: Obtiene todos los préstamos registrados.
+- **POST** `/loans`: Crea un préstamo de libro. Se deben proporcionar `user_id` y `book_id`.
+- **GET** `/users/{user_id}/loans`: Obtiene todos los préstamos de un usuario específico por `id`.
+- **POST** `/loans/{loan_id}`: Marca un préstamo como devuelto.
 
 ## Licencia
 
