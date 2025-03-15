@@ -1,7 +1,5 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 import json
 from .models import Library, Book, Loan, User
 
@@ -10,10 +8,14 @@ def libraries(request): # get_libraries and add_library
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            library = Library.objects.create(
+
+            library = Library(
                 name = data['name'],
                 location = data['location']
             )
+            library.full_clean()
+            library.objects.create()
+
             return JsonResponse({"message": "Library successfully registered", "library.id": library.id})
         
         except KeyError:
@@ -43,28 +45,25 @@ def add_book(request):
         try:
             data = json.loads(request.body)    
             library_found = Library.objects.get(id=data['library_id'])
-            
-            if not data['title']:
-                return JsonResponse({"error": "Title cannot be empty"})
 
-            book = Book.objects.create(
+            book = Book(
                 isbn = data['isbn'],
                 title = data['title'],
-                genre = data['genre'],
-                language = data['language'],
+                genre = data['genre'].lower(),
+                language = data['language'].lower(),
                 author = data['author'],
                 editorial = data['editorial'],
-                format = data['format'],
-                age_range = data['age_range'],
+                format = data['format'].lower(),
+                age_range = data['age_range'].lower(),
                 library = library_found
             )
+            book.full_clean()
+            book.save()
+
             return JsonResponse({"message": "Book successfully registered", "book.id": book.id})
         
-        except KeyError:
-            return JsonResponse({"error": "Incomplete fields"}, status=400)
-        
         except Library.DoesNotExist:
-            return JsonResponse({"error": "Library not found"})
+            return JsonResponse({"error": "Library not found"}, status=404)
         
     return JsonResponse({"error": "Invalid method"}, status=405)
 
@@ -72,10 +71,21 @@ def add_book(request):
 def get_books_library(request, library_id):
     if request.method == 'GET':
         try:
+            filter = request.GET.get('filter')
             library_find = Library.objects.get(id=library_id)
-            books_library = list(Book.objects.filter(library=library_find).values("id", "isbn", "title", "genre", 
-                                                                             "language", "author", "editorial", 
-                                                                             "format", "age_range"))
+
+            if(filter == 'available'):
+                books_library = list(Book.objects.filter(library=library_find)
+                                     .exclude(id__in=Loan.objects.filter(returned=False)
+                                            .values_list("book_id", flat=True))
+                                     .values("id", "isbn", "title", "genre", "language",
+                                            "author", "editorial","format", "age_range"))
+
+            else:
+                books_library = list(Book.objects.filter(library=library_find)
+                                     .values("id", "isbn", "title", "genre", 
+                                            "language", "author", "editorial", 
+                                            "format", "age_range"))
 
             response = {
                 "library": {
@@ -85,10 +95,11 @@ def get_books_library(request, library_id):
                 },
                 "books": books_library
             }
+
             return JsonResponse(response, safe=False)
         
         except Library.DoesNotExist:
-            return JsonResponse({"error": "Library not found"})
+            return JsonResponse({"error": "Library not found"}, status=404)
         
     return JsonResponse({"error": "Invalid method"}, status=405)
 
@@ -107,22 +118,22 @@ def books(request, book_id): # get_book and update_book
             book = Book.objects.get(id=book_id)
             data = json.loads(request.body)
 
-            if not data['title']:
-                return JsonResponse({"error": "Title cannot be empty"})
-
             book.title = data['title']
-            book.genre = data['genre']
-            book.language = data['language']
+            book.genre = data['genre'].lower()
+            book.language = data['language'].lower()
             book.author = data['author']
             book.editorial = data['editorial']
-            book.format = data['format']
-            book.age_range = data['age_range']
+            book.format = data['format'].lower()
+            book.age_range = data['age_range'].lower()
+            book.full_clean()
             book.save()
 
-            return JsonResponse({"message": "Book updated successfully", "book_id": book.id}, status=200)
+            return JsonResponse({"message": "Book updated successfully", "book_id": book.id}, status=201)
         
         except Book.DoesNotExist:
             return JsonResponse({"error": "Book not found"}, status=404)
+        except KeyError:
+            return JsonResponse({"error": "Incomplete fields"}, status=400)
 
     if request.method == 'DELETE':
         try:
@@ -139,13 +150,16 @@ def users(request): # add_user and get_users
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            user = User.objects.create(
+            user = User(
                 dni = data['dni'],
                 email = data['email'],
                 name = data['name'],
                 surname = data['surname'],
                 birthdate = data['birthdate']
             )
+            user.full_clean()
+            user.save()
+
             return JsonResponse({"message": "User successfully registered", "user.id": user.id})
         
         except KeyError:
@@ -173,7 +187,6 @@ def get_user_id(request, user_id):
 def loans(request): # add_loan and get_loans
     if request.method == 'POST':
         try:
-
             data = json.loads(request.body)
             user_found = User.objects.get(id=data['user_id'])
             book_found = Book.objects.get(id=data['book_id'])
@@ -186,12 +199,15 @@ def loans(request): # add_loan and get_loans
                 book = book_found,
                 user = user_found
             )
+
             return JsonResponse({"message": "Loan successfully registered", "loan.id": loan.id})
         
         except User.DoesNotExist:
             return JsonResponse({"error": "User not found"}, status=404)
         except Book.DoesNotExist:
             return JsonResponse({"error": "Book not found"}, status=404)
+        except KeyError:
+            return JsonResponse({"error": "Incomplete fields"}, status=400)
 
     if request.method == 'GET':
         loans = list(Loan.objects.all().values())
@@ -227,15 +243,19 @@ def get_loans_user(request, user_id):
 
 @csrf_exempt
 def update_loan_returned(request, loan_id):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         try:
             loan = Loan.objects.get(id=loan_id)
+            if(loan.returned):
+                return JsonResponse({"message": "Book already returned"})
+
             loan.returned = True
             loan.save()
+            return JsonResponse({"message": "Loan changed to returned"})
 
         except Loan.DoesNotExist:
             return JsonResponse({"error": "Loan not found"})
-
+        
     return JsonResponse({"error": "Invalid method"}, status=405)
 
 

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class Library(models.Model):
     name = models.CharField(max_length=50)
@@ -6,40 +7,41 @@ class Library(models.Model):
 
 class Book(models.Model):
     GENRE_CHOICES = [
-        ('fiction', 'Fiction'),
-        ('non_fiction', 'Non-Fiction'),
-        ('fantasy', 'Fantasy'),
-        ('science_fiction', 'Science Fiction'),
-        ('mystery_thriller', 'Mystery/Thriller'),
-        ('romance', 'Romance'),
-        ('horror', 'Horror'),
-        ('history', 'History'),
-        ('biography_memoir', 'Biography/Memoir'),
-        ('philosophy', 'Philosophy'),
-        ('self_help', 'Self-Help'),
-        ('science_technology', 'Science & Technology'),
+    ('fiction', 'fiction'),
+    ('non_fiction', 'non_fiction'),
+    ('fantasy', 'fantasy'),
+    ('science_fiction', 'science_fiction'),
+    ('mystery_thriller', 'mystery_thriller'),
+    ('romance', 'romance'),
+    ('horror', 'horror'),
+    ('history', 'history'),
+    ('biography_memoir', 'biography_memoir'),
+    ('philosophy', 'philosophy'),
+    ('self_help', 'self_help'),
+    ('science_technology', 'science_technology')
     ]
 
     LANGUAGE_CHOICES = [
-        ('spanish', 'Spanish'),
-        ('english', 'English'),
-        ('others', 'Others'),
+        ('spanish', 'spanish'),
+        ('english', 'english'),
+        ('others', 'others')
     ]
 
     FORMAT_CHOICES = [
-        ('ebook', 'eBook'),
-        ('physical', 'Physical Book'),
-        ('audiobook', 'AudioBook'),
+        ('ebook', 'ebook'),
+        ('physical', 'physical'),
+        ('audiobook', 'audiobook')
     ]
 
     AGE_RANGE_CHOICES = [
-        ('children', 'Children'),
-        ('young_adult', 'Young Adult'),
-        ('adult', 'Adult'),
+        ('children', 'children'),
+        ('young_adult', 'young_adult'),
+        ('adult', 'adult')
     ]
-    isbn = models.CharField(max_length=13, unique=True)
-    title = models.CharField(max_length=50)
-    genre = models.CharField(max_length=20, choices=GENRE_CHOICES)  
+
+    isbn = models.CharField(max_length=20, unique=True)
+    title = models.CharField(max_length=50, blank=False, null=False)
+    genre = models.CharField(max_length=20, choices=GENRE_CHOICES)
     language = models.CharField(max_length=10, choices=LANGUAGE_CHOICES)  
     author = models.CharField(max_length=50)
     editorial = models.CharField(max_length=50)
