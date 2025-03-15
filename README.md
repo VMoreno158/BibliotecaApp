@@ -5,7 +5,7 @@ Este es un sistema de gestión de bibliotecas desarrollado con **Django**. El si
 ## Características
 
 - **Gestión de Bibliotecas**: Crear y consultar bibliotecas.
-- **Gestión de Libros**: Agregar, consultar y eliminar libros de la base de datos.
+- **Gestión de Libros**: Agregar, consultar, editar y eliminar libros de la base de datos.
 - **Gestión de Usuarios**: Registrar y consultar usuarios.
 - **Gestión de Préstamos**: Registrar préstamos de libros, marcar libros como devueltos.
 - **Consultas por Biblioteca**: Listar los libros disponibles en una biblioteca.
