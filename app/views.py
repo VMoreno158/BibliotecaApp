@@ -14,7 +14,7 @@ def libraries(request): # get_libraries and add_library
                 location = data['location']
             )
             library.full_clean()
-            library.objects.create()
+            library.save()
 
             return JsonResponse({"message": "Library successfully registered", "library.id": library.id})
         
