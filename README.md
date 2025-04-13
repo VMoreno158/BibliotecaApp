@@ -1,4 +1,4 @@
-# Biblioteca Management System
+# BibliotecaApp
 
 Este es un sistema de gestión de bibliotecas desarrollado con **Django**. El sistema permite gestionar bibliotecas, libros, usuarios y préstamos. A través de este sistema, los usuarios pueden realizar préstamos de libros y las bibliotecas pueden administrar su inventario de libros.
 
